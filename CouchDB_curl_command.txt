@@ -1,0 +1,218 @@
+ 
+
+# Q.2 
+
+#Part 1. 
+
+#Selected NoSQL : Couch DB 
+
+
+
+# 1.Starting CouchDB 
+
+$ curl http://127.0.0.1:5984/ 
+
+ 
+
+# 2.Creating a new database named mydb 
+
+curl -X PUT http://harini:pw@localhost:5984/mydb 
+
+ 
+
+ 
+
+#    Show all databases currently exists  
+
+curl -X GET http://harini:pw@localhost:5984/_all_dbs 
+
+ 
+
+ 
+
+#    Deleting the database called mydb2 
+
+curl -X DELETE http://harini:pw@localhost:5984/mydb2 
+
+ 
+
+ # Creating a document with id “001” in database name “mydb” 
+
+curl -X PUT http://harini:pw@localhost:5984/mydb/"001" –d '{ " Name " : " Ravee " , " age " :" 25 " , " Department " : " IT " }' 
+
+ 
+
+ # Viewing the created document 
+
+curl -X GET http://harini:pw@localhost:5984/mydb/001 
+
+ 
+
+ # Uploading a Json file to database name “bookdb”  
+
+$ curl -d @/C:/Users/booksample.json -H "Content-type: application/json" -X POST http://harini:pw@loalhost:5984/bookdb/_bulk_docs 
+
+ 
+
+ # Viewing the created document in bookdb 
+
+ curl -X GET http://harini:pw@localhost:5984/bookdb/4b965370c2264b2c9aa89a26df0104dd 
+
+ 
+
+ # Updating the above retrieve document 
+
+curl -X PUT http://harini:pw@localhost:5984/bookdb/4b965370c2264b2c9aa89a26df0104dd / -d '{ "title":"OSGi in Depth OLD" , "_rev" : "1-2f083b54e7d5a461e46d763b894149eb" }' 
+
+ 
+
+ # Deleting the above updated document in bookdb 
+
+$ curl -H 'Content-Type: application/json' -X DELETE http://harini:pw@localhost:5984/bookdb/4b965370c2264b2c9aa89a26df0104dd?rev=2-37aedd56775eada1e052061b123fa1d8 
+
+
+ #   Filtering  the document containing page count is 600 
+
+$ curl  -H 'Content-Type: application/json' -d '{"selector":{ "pageCount": 600 },"fields": ["id","title","isbn","pageCount"]}' -X POST http://harini:pw@localhost:5984/bookdb/_find 
+
+ 
+
+ # Sorting  
+
+Create Index for sorting fields 
+
+$ curl -H 'Content-Type: application/json' -d '{"index":{"fields":["title","pageCount"]}}' -X POST http://harini:pw@localhost:5984/bookdb/_index 
+
+ 
+
+ 
+
+ #Retrieve Sorted Information 
+
+$ curl  -H 'Content-Type: application/json' -d '{"selector":{"title":{"$regex":"in"}},"fields": ["id","title", "pageCount"],"sort":[{"title":"desc"},{"pageCount":"desc"}]}' –X POST http://harini:pw@localhost:5984/bookdb/_find?include_docs=true 
+
+ 
+
+ #   Aggregation and pipeline 
+
+Created fun.json fileby writing below function  
+
+fun.json 
+
+ 
+
+{ 
+
+  "views": { 
+
+"sumValues": { 
+
+  "map":  
+
+                   "function(doc){ 
+
+                     if(doc.categories){ 
+
+                      doc.categories.forEach(function(categories){ 
+
+                       emit(categories,1)})}}", 
+
+  "reduce":  
+
+                     "function(key,values) { return sum(values); }" 
+
+} 
+
+           } 
+
+} 
+
+ 
+
+
+#    Creating the view called “book_category” 
+
+$ curl -d @/C:/Users/Dinesh/Documents/AdvancedDB/CW/fun.json -X PUT http://harini:pw@localhost:5984/bookdb/_design/book_category 
+
+ 
+
+ 
+
+ 
+
+ 
+
+#    Following command will called the view , 
+
+curl -X GET http://harini:pw@localhost:5984/bookdb/_design/book_category/_view/sumValues?group=true 
+
+ 
+
+ 
+
+#    Replication 
+
+#CouchDB Docker image instance was used as destination to create replication. Create a replication of database named “mydb” bidirectional. . 
+
+$ curl -X POST -H 'Content-Type: application/json' http://harini:pw@localhost:5984/_replicate -d '{"source":"mydb", "target":"http://localhost:5985/mydb", "continuous":true}' 
+
+$ curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5985/_replicate -d '{"source":"mydb", "target":"http://localhost:5984/mydb", "continuous":true}'  
+
+ 
+
+ 
+
+ 
+
+# Create a document with id= 005 in host machine and check the same document in destination.  
+
+curl -X PUT http://harini:pw@localhost:5984/mydb/"005" –d '{ " Name " : " Replication " , " freq " :" 1 " , " Direction " : " from host" }' 
+
+ 
+
+Curl http://127.0.0.1:5984/mydb/005 
+
+ 
+
+#    Start/Stop of Instance  
+
+ 
+
+#    Tune consistency /availability  
+
+CouchDB use quorum to increase read and write consistency 
+
+A quorum is equal to, one plus half the number of “relevant copies”. 
+
+r=size of read quorum, w=size of write quorum, n=numberof replicas 
+
+ 
+
+# To get node names and all the nodes it is connected  
+
+ 
+
+curl -X GET "http://harini:pw@localhost:5984/_membership" 
+
+ 
+
+# Adding a node 
+
+curl -X PUT " http://harini:pw@localhost:5986/_nodes/node2@yyy.yyy.yyy.yyy" -d {} 
+
+ 
+
+# Now it shows two nodes 
+
+ curl -X GET "http://harini:pw@localhost:5984/_membership" 
+
+ 
+
+# Creating a database “testdb” with 3 replicas and 8 shards 
+
+ curl -X PUT " http://harini:pw@localhost:5984/testdb?n=3&q=8" 
+
+ 
+
+
+ 
