@@ -62,6 +62,37 @@ o Creating/dropping databases/collections
 o Storing, modifying and deleting data
 o Retrieving data
 ▪ Filtering
+▪ Aggregations and pipelines
+▪ Sorting and etc.
+o Basic administration tasks
+▪ Start/stop the instance
+▪ Tune consistency/availability
+▪ Replication
+
+
+Question 3 
+
+Use data provided with books.json file and load it to a MongoDB 
+instance. Write the following queries to demonstrate the use of the MongoDB. For each one, write 
+the MongoDB command you typed to get the answer and, where requested, give the answer you 
+got back.
+1. Create a database called “iitdb” and a collection called ‘books’ and load the given data set 
+to the “books” collection.
+2. List only the title of all the published books
+3. Find the books with 400 – 450 pages
+4. Count the number of books which were authored by “Steve Loughran” – Report the number 
+you get as an answer.
+5. Find the books with a title that starts with the word "Mongo". Display only the title and 
+authors. 
+6. Find the books of category “Java” according to the first element in the “categories” Array. 
+Display only the first author (first element in the “authors” Array), and the title. Arrange 
+the name of the first author in ascending order and for that same first author, titles should 
+be in descending order. 
+7. Find the books written by more than four authors. Display only the title and the number of 
+authors. 
+8. Write an aggregation pipeline to count the number of published books for each category. 
+Report number of books in the "Internet" category.
+
 
 
 
