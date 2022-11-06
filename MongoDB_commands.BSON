@@ -1,0 +1,98 @@
+
+#Q.3 
+
+# 1)  
+
+#    Creating data base ‘iitdb’ 
+
+use iitb 
+
+ 
+
+#    Loading books.json file to collection ‘books’ 
+
+mongoimport –db iitdb –collection books –type json –file/home/hp/Desktop/books.json 
+
+ 
+
+#    Available data bases 
+
+ 
+db.books.find({}) 
+
+ 
+
+ 
+
+# 2.) 
+
+Db.books.find({},{“title”:1, ”_id”:0}) 
+
+ 
+
+# 3.) 
+
+db.books.find({“pageCount”:{$gt:400, $lt:450}},{“tittle”:1, “_id”:0}) 
+
+ 
+
+# 4.) 
+
+db.books.find({“authors”: ”Steve Loughran”}).count() 
+
+  
+# 5.).  
+
+db.books.find({“title”:{$regex:/^Mongo/}}.{“tittle”:1, ”authors”:1, “_id”:0}) 
+
+ 
+
+# 6.) 
+
+db.books.find({“categories.0”: “Java”},{”title”:1,”authors”:{$slice:1}, “_id”: 0}) .sort({“authors”:1, “title”: 1}) 
+
+ 
+
+# 7.)  
+
+ db.books.aggregate([ 
+
+    { 
+
+        "$project": { 
+
+            "title": 1, 
+
+            "num_authors": { "$size": "$authors" } 
+
+         } 
+
+    }, 
+
+    { 
+
+        "$match": { 
+
+            "num_authors": { "$gte": 4 } 
+
+         } 
+
+    } 
+
+]) 
+
+ 
+
+ 
+
+ # 8)  
+
+db.books.aggregate([ 
+
+ {$unwind : "$categories" }, {$project: {"_id":0, "category": "$categories" }},  
+
+ {$match : {category : "Internet"}}, 
+
+ {$group : { "_id" : {$toLower : "$category" }, "count" : {$sum : 1}}} ]) 
+
+ 
