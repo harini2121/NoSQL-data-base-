@@ -25,6 +25,7 @@ As the business grows, it is expected that the volume of data along with the vel
 
 As a Big Data architect, you are expected to introduce NoSQL storages to address new requirements and enhance the performance of the existing systems.
 
+Question 1 
 a. Justify the selection of the proposed NoSQL type(s) and the technology(s). You should specify any assumptions that you have made.
 You should consider and include following points when compiling your answer:
 
